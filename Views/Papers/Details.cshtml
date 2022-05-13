@@ -1,0 +1,209 @@
+﻿﻿@model ResearchGate.Models.tbl_paper
+@using ResearchGate.Models
+@{ 
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+    }
+
+
+
+
+
+<head>
+
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script> @*Including Jquery for ajax code*@
+    <script src="https://kit.fontawesome.com/11391bee6d.js" crossorigin="anonymous"></script> @*Like and Dislike icons*@
+
+    <script type="text/javascript">
+         $(document).ready(function () {
+            $('#Like').on('click', function () {
+
+                debugger;
+                $.get("@Url.Content("~/Papers/Like")/?id=" + @Model.p_id + "&status=" + true, function (data) {
+                    var counters = data.split('/');
+                    $("#likecount").text(counters[0]);
+                    $("#dislikecount").text(counters[1]);
+                    $("#Like").attr('disabled', 'disabled');
+                    $("#Dislike").attr('disabled', false);
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#Dislike').on('click', function () {
+
+                debugger;
+
+                $.get("@Url.Content("~/Papers/Like")/?id=" + @Model.p_id + "&status=" + false, function (data) {
+                    var counters = data.split('/');
+                    $("#likecount").text(counters[0]);
+                    $("#dislikecount").text(counters[1]);
+                    $("#Dislike").attr('disabled', 'disabled');
+                    $("#Like").attr('disabled', false);
+                });
+            });
+        });
+
+
+    </script>
+
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#btnComment').on('click', function () {
+                $.ajax({
+                    url: "@Url.Action("LeaveComment", "Papers")",
+                    type: "post",
+                    data: $("#CommentForm").serialize()
+
+
+
+
+                }).done(function (response) {
+                    debugger;
+                    if (response.Success) {
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Error!");
+                    }
+
+
+                }).fail(function () {
+                    alert("Error2!");
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Paper Details</h2>
+   
+    <div>
+
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @*@Html.DisplayNameFor(model => model.p_name)*@ Paper Name
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.p_name)
+            </dd>
+            <!--<dt>-->
+            @*@Html.DisplayNameFor(model => model.p_file)*@ @*Paper Name*@
+            <!--</dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.p_file)
+        </dd>-->
+            <dt>
+                @*@Html.DisplayNameFor(model => model.tbl_user.u_name)*@ Author Name
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.tbl_user.u_name)
+            </dd>
+        </dl>
+
+        @foreach (tbl_likes user in ViewBag.AllUserlikedislike)
+        {
+
+            ViewBag.userid = user.UserId;
+            ViewBag.userlike = user.l_islike;
+
+
+        }
+
+        @if (@ViewBag.userlike == true) //if a user liked then he can only dislike
+        {
+            <button class="btn btn-info btn-xs like-button"
+                    disabled data - status="true"
+                    id="Like">
+                Like <i class="fa fa-thumbs-o-up"> </i> <span id="likecount">@ViewBag.like</span>
+            </button>
+            <button class="btn btn-info btn-xs like-button"
+                    data - status="false"
+                    id="Dislike">
+                Dislike <i class="fa fa-thumbs-o-down"> </i><span id="dislikecount">@ViewBag.Dislike</span>
+            </button>
+
+        }
+        else if (@ViewBag.userlike == false) //if a user disliked then he can only like
+        {
+            <button class="btn btn-info btn-xs like-button"
+                    data - status="true"
+                    id="Like">
+                Like <i class="fa fa-thumbs-o-up"> </i> <span id="likecount"> @ViewBag.like </span>
+            </button>
+            <button class="btn btn-info btn-xs like-button"
+                    disabled data - status="false"
+                    id="Dislike">
+                Dislike <i class="fa fa-thumbs-o- down"> </i><span id="dislikecount">@ViewBag.Dislike</span>
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-info btn-xs like-button"
+                    data - status="true"
+                    id="Like">
+                Like <i class="fa fa-thumbs-o-up"> </i> <span id="likecount">@ViewBag.like</span>
+            </button>
+            <button class="btn btn-info btn-xs like-button"
+                    data - status="false"
+                    id="Dislike">
+                Dislike <i class="fa fa-thumbs-o-down"> </i><span id="dislikecount">@ViewBag.Dislike</span>
+            </button>
+        }
+
+
+        <br />
+        <br />
+        <br />
+        <br />
+
+
+
+        <div class="card card-outline-secondary my-4">
+            <div class="card-header"
+                 Comments Section
+    </div>
+            <div class="card-body">
+
+                <p>This is a test comment This is a test comment This is a test comment This is a test comment This is a test comment</p>
+                <small class="text-muted">Posted by Anonymous on 28/4/2022 </small>
+                <hr />
+                <br />
+                <p>This is a test comment This is a test comment This is a test comment This is a test comment This is a test comment<p>
+                    <small class="text-muted">Posted by Anonymous on 28/4/2022 </small>
+                    <hr />
+                    <br />
+                <p>This is a test comment This is a test comment This is a test comment This is a test comment This is a test comment</p>
+                <small class="text-muted">Posted by Anonymous on 28/4/2022 </small>
+                <hr />
+                <form id="CommentForm">
+                    <input type="hidden" name="CommentId" value="23" />
+                    <input type="hidden" name="ResearchId" value="@Model.p_id" />
+                    <div class="form-group">
+                        <label>Enter Your Comment</label>
+                        <textarea class="form-control" rows="3" placeholder="Your Comment" name="CommentText"></textarea>
+                    </div>
+                    <button class="btn btn-success" id="btnComment" type="button">Comment</button>
+                </form>
+
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.p_id }) |
+        @Html.ActionLink("Back to Your Profile", "Index")
+    </p>
+</body>

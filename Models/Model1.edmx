@@ -1,0 +1,451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="dbreserchgateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_author">
+          <Key>
+            <PropertyRef Name="a_id" />
+          </Key>
+          <Property Name="a_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="a_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="a_fk_paper" Type="int" />
+          <Property Name="a_fk_user" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_comments">
+          <Key>
+            <PropertyRef Name="c_id" />
+          </Key>
+          <Property Name="c_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="c_text" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="c_timestamp" Type="datetime" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="PaperId" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_likes">
+          <Key>
+            <PropertyRef Name="l_id" />
+          </Key>
+          <Property Name="l_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="l_islike" Type="bit" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PaperId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_paper">
+          <Key>
+            <PropertyRef Name="p_id" />
+          </Key>
+          <Property Name="p_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="p_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="p_file" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="p_fk_user" Type="int" />
+          <Property Name="p_LikeCount" Type="int" />
+          <Property Name="p_DislikeCount" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_user">
+          <Key>
+            <PropertyRef Name="u_id" />
+          </Key>
+          <Property Name="u_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="u_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="u_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="u_password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="u_image" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="u_contact" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="u_position" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tbl_autho__a_fk___2B3F6F97">
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="0..1" />
+          <End Role="tbl_author" Type="Self.tbl_author" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_author">
+              <PropertyRef Name="a_fk_paper" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_autho__a_fk___2C3393D0">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="0..1" />
+          <End Role="tbl_author" Type="Self.tbl_author" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_author">
+              <PropertyRef Name="a_fk_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_paper__p_fk___286302EC">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="0..1" />
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_paper">
+              <PropertyRef Name="p_fk_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_comments_tbl_paper">
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="0..1" />
+          <End Role="tbl_comments" Type="Self.tbl_comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_comments">
+              <PropertyRef Name="PaperId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_comments_tbl_user">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="0..1" />
+          <End Role="tbl_comments" Type="Self.tbl_comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_comments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_likes_tbl_paper">
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="1" />
+          <End Role="tbl_likes" Type="Self.tbl_likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_likes">
+              <PropertyRef Name="PaperId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_likes_tbl_user">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="1" />
+          <End Role="tbl_likes" Type="Self.tbl_likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_likes">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbreserchgateModelStoreContainer">
+          <EntitySet Name="tbl_author" EntityType="Self.tbl_author" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_comments" EntityType="Self.tbl_comments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_likes" EntityType="Self.tbl_likes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_paper" EntityType="Self.tbl_paper" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_user" EntityType="Self.tbl_user" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_autho__a_fk___2B3F6F97" Association="Self.FK__tbl_autho__a_fk___2B3F6F97">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_author" EntitySet="tbl_author" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_autho__a_fk___2C3393D0" Association="Self.FK__tbl_autho__a_fk___2C3393D0">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_author" EntitySet="tbl_author" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_paper__p_fk___286302EC" Association="Self.FK__tbl_paper__p_fk___286302EC">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_comments_tbl_paper" Association="Self.FK_tbl_comments_tbl_paper">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_comments" EntitySet="tbl_comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_comments_tbl_user" Association="Self.FK_tbl_comments_tbl_user">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_comments" EntitySet="tbl_comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_likes_tbl_paper" Association="Self.FK_tbl_likes_tbl_paper">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_likes" EntitySet="tbl_likes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_likes_tbl_user" Association="Self.FK_tbl_likes_tbl_user">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_likes" EntitySet="tbl_likes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="dbreserchgateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_author">
+          <Key>
+            <PropertyRef Name="a_id" />
+          </Key>
+          <Property Name="a_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="a_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="a_fk_paper" Type="Int32" />
+          <Property Name="a_fk_user" Type="Int32" />
+          <NavigationProperty Name="tbl_paper" Relationship="Self.FK__tbl_autho__a_fk___30F848ED" FromRole="tbl_author" ToRole="tbl_paper" />
+          <NavigationProperty Name="tbl_user" Relationship="Self.FK__tbl_autho__a_fk___31EC6D26" FromRole="tbl_author" ToRole="tbl_user" />
+        </EntityType>
+        <EntityType Name="tbl_paper">
+          <Key>
+            <PropertyRef Name="p_id" />
+          </Key>
+          <Property Name="p_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="p_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_file" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_fk_user" Type="Int32" />
+          <NavigationProperty Name="tbl_author" Relationship="Self.FK__tbl_autho__a_fk___30F848ED" FromRole="tbl_paper" ToRole="tbl_author" />
+          <NavigationProperty Name="tbl_user" Relationship="Self.FK__tbl_paper__p_fk___2E1BDC42" FromRole="tbl_paper" ToRole="tbl_user" />
+          <Property Name="p_LikeCount" Type="Int32" />
+          <Property Name="p_DislikeCount" Type="Int32" />
+          <NavigationProperty Name="tbl_comments" Relationship="dbreserchgateModel.FK_tbl_comments_tbl_paper" FromRole="tbl_paper" ToRole="tbl_comments" />
+          <NavigationProperty Name="tbl_likes" Relationship="dbreserchgateModel.FK_tbl_likes_tbl_paper" FromRole="tbl_paper" ToRole="tbl_likes" />
+        </EntityType>
+        <EntityType Name="tbl_user">
+          <Key>
+            <PropertyRef Name="u_id" />
+          </Key>
+          <Property Name="u_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="u_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="u_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="u_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="u_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="u_contact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="u_position" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tbl_author" Relationship="Self.FK__tbl_autho__a_fk___31EC6D26" FromRole="tbl_user" ToRole="tbl_author" />
+          <NavigationProperty Name="tbl_paper" Relationship="Self.FK__tbl_paper__p_fk___2E1BDC42" FromRole="tbl_user" ToRole="tbl_paper" />
+          <NavigationProperty Name="tbl_comments" Relationship="dbreserchgateModel.FK_tbl_comments_tbl_user" FromRole="tbl_user" ToRole="tbl_comments" />
+          <NavigationProperty Name="tbl_likes" Relationship="dbreserchgateModel.FK_tbl_likes_tbl_user" FromRole="tbl_user" ToRole="tbl_likes" />
+        </EntityType>
+        <Association Name="FK__tbl_autho__a_fk___30F848ED">
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="0..1" />
+          <End Role="tbl_author" Type="Self.tbl_author" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_author">
+              <PropertyRef Name="a_fk_paper" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_autho__a_fk___31EC6D26">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="0..1" />
+          <End Role="tbl_author" Type="Self.tbl_author" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_author">
+              <PropertyRef Name="a_fk_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_paper__p_fk___2E1BDC42">
+          <End Role="tbl_user" Type="Self.tbl_user" Multiplicity="0..1" />
+          <End Role="tbl_paper" Type="Self.tbl_paper" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_paper">
+              <PropertyRef Name="p_fk_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="dbreserchgateEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_author" EntityType="Self.tbl_author" />
+          <EntitySet Name="tbl_paper" EntityType="Self.tbl_paper" />
+          <EntitySet Name="tbl_user" EntityType="Self.tbl_user" />
+          <AssociationSet Name="FK__tbl_autho__a_fk___30F848ED" Association="Self.FK__tbl_autho__a_fk___30F848ED">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_author" EntitySet="tbl_author" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_autho__a_fk___31EC6D26" Association="Self.FK__tbl_autho__a_fk___31EC6D26">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_author" EntitySet="tbl_author" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_paper__p_fk___2E1BDC42" Association="Self.FK__tbl_paper__p_fk___2E1BDC42">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+          </AssociationSet>
+          <EntitySet Name="tbl_comments" EntityType="dbreserchgateModel.tbl_comments" />
+          <EntitySet Name="tbl_likes" EntityType="dbreserchgateModel.tbl_likes" />
+          <AssociationSet Name="FK_tbl_comments_tbl_paper" Association="dbreserchgateModel.FK_tbl_comments_tbl_paper">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_comments" EntitySet="tbl_comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_comments_tbl_user" Association="dbreserchgateModel.FK_tbl_comments_tbl_user">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_comments" EntitySet="tbl_comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_likes_tbl_paper" Association="dbreserchgateModel.FK_tbl_likes_tbl_paper">
+            <End Role="tbl_paper" EntitySet="tbl_paper" />
+            <End Role="tbl_likes" EntitySet="tbl_likes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_likes_tbl_user" Association="dbreserchgateModel.FK_tbl_likes_tbl_user">
+            <End Role="tbl_user" EntitySet="tbl_user" />
+            <End Role="tbl_likes" EntitySet="tbl_likes" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="tbl_comments">
+          <Key>
+            <PropertyRef Name="c_id" />
+          </Key>
+          <Property Name="c_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="c_text" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="c_timestamp" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="PaperId" Type="Int32" />
+          <NavigationProperty Name="tbl_paper" Relationship="dbreserchgateModel.FK_tbl_comments_tbl_paper" FromRole="tbl_comments" ToRole="tbl_paper" />
+          <NavigationProperty Name="tbl_user" Relationship="dbreserchgateModel.FK_tbl_comments_tbl_user" FromRole="tbl_comments" ToRole="tbl_user" />
+        </EntityType>
+        <EntityType Name="tbl_likes">
+          <Key>
+            <PropertyRef Name="l_id" />
+          </Key>
+          <Property Name="l_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="l_islike" Type="Boolean" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PaperId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_paper" Relationship="dbreserchgateModel.FK_tbl_likes_tbl_paper" FromRole="tbl_likes" ToRole="tbl_paper" />
+          <NavigationProperty Name="tbl_user" Relationship="dbreserchgateModel.FK_tbl_likes_tbl_user" FromRole="tbl_likes" ToRole="tbl_user" />
+        </EntityType>
+        <Association Name="FK_tbl_comments_tbl_paper">
+          <End Type="dbreserchgateModel.tbl_paper" Role="tbl_paper" Multiplicity="0..1" />
+          <End Type="dbreserchgateModel.tbl_comments" Role="tbl_comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_comments">
+              <PropertyRef Name="PaperId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_comments_tbl_user">
+          <End Type="dbreserchgateModel.tbl_user" Role="tbl_user" Multiplicity="0..1" />
+          <End Type="dbreserchgateModel.tbl_comments" Role="tbl_comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_comments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_likes_tbl_paper">
+          <End Type="dbreserchgateModel.tbl_paper" Role="tbl_paper" Multiplicity="1" />
+          <End Type="dbreserchgateModel.tbl_likes" Role="tbl_likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_paper">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="tbl_likes">
+              <PropertyRef Name="PaperId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_likes_tbl_user">
+          <End Type="dbreserchgateModel.tbl_user" Role="tbl_user" Multiplicity="1" />
+          <End Type="dbreserchgateModel.tbl_likes" Role="tbl_likes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_user">
+              <PropertyRef Name="u_id" />
+            </Principal>
+            <Dependent Role="tbl_likes">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="dbreserchgateModelStoreContainer" CdmEntityContainer="dbreserchgateEntities">
+          <EntitySetMapping Name="tbl_author">
+            <EntityTypeMapping TypeName="dbreserchgateModel.tbl_author">
+              <MappingFragment StoreEntitySet="tbl_author">
+                <ScalarProperty Name="a_id" ColumnName="a_id" />
+                <ScalarProperty Name="a_name" ColumnName="a_name" />
+                <ScalarProperty Name="a_fk_paper" ColumnName="a_fk_paper" />
+                <ScalarProperty Name="a_fk_user" ColumnName="a_fk_user" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_paper">
+            <EntityTypeMapping TypeName="dbreserchgateModel.tbl_paper">
+              <MappingFragment StoreEntitySet="tbl_paper">
+                <ScalarProperty Name="p_DislikeCount" ColumnName="p_DislikeCount" />
+                <ScalarProperty Name="p_LikeCount" ColumnName="p_LikeCount" />
+                <ScalarProperty Name="p_id" ColumnName="p_id" />
+                <ScalarProperty Name="p_name" ColumnName="p_name" />
+                <ScalarProperty Name="p_file" ColumnName="p_file" />
+                <ScalarProperty Name="p_fk_user" ColumnName="p_fk_user" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_user">
+            <EntityTypeMapping TypeName="dbreserchgateModel.tbl_user">
+              <MappingFragment StoreEntitySet="tbl_user">
+                <ScalarProperty Name="u_id" ColumnName="u_id" />
+                <ScalarProperty Name="u_name" ColumnName="u_name" />
+                <ScalarProperty Name="u_email" ColumnName="u_email" />
+                <ScalarProperty Name="u_password" ColumnName="u_password" />
+                <ScalarProperty Name="u_image" ColumnName="u_image" />
+                <ScalarProperty Name="u_contact" ColumnName="u_contact" />
+                <ScalarProperty Name="u_position" ColumnName="u_position" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_comments">
+            <EntityTypeMapping TypeName="dbreserchgateModel.tbl_comments">
+              <MappingFragment StoreEntitySet="tbl_comments">
+                <ScalarProperty Name="PaperId" ColumnName="PaperId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="c_timestamp" ColumnName="c_timestamp" />
+                <ScalarProperty Name="c_text" ColumnName="c_text" />
+                <ScalarProperty Name="c_id" ColumnName="c_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_likes">
+            <EntityTypeMapping TypeName="dbreserchgateModel.tbl_likes">
+              <MappingFragment StoreEntitySet="tbl_likes">
+                <ScalarProperty Name="PaperId" ColumnName="PaperId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="l_islike" ColumnName="l_islike" />
+                <ScalarProperty Name="l_id" ColumnName="l_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
